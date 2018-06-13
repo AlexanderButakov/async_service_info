@@ -133,7 +133,7 @@ class ServicesHandler(object):
 
             except Exception as e:
                 data = {'status': self.SERVER_ERROR, 'reason': str(e)}
-                logging.critical(e, exc_info=True)
+                server_logger.critical(e, exc_info=True)
 
             return self.make_response(data)
 
@@ -208,7 +208,7 @@ class PortScanningHandler(object):
                 try:
                     services = await self.pg_client.execute(conn, sql_select)
                 except psycopg2.Error as e:
-                    logging.exception(e)
+                    server_logger.exception(e)
                     break
 
                 for service in services:
@@ -229,7 +229,7 @@ class PortScanningHandler(object):
                 asyncio.open_connection(ip, port), timeout=self.SCAN_TIMEOUT)
         except ConnectionRefusedError as e:
             available = False
-            logging.info(f'{ip}:{port} is unavailable')
+            server_logger.info(f'{ip}:{port} is unavailable')
         else:
             available = True
         finally:
@@ -237,7 +237,7 @@ class PortScanningHandler(object):
             try:
                 await self.pg_client.execute(conn, sql, binds, fetch=False)
             except psycopg2.Error as e:
-                logging.exception(e)
+                server_logger.exception(e)
 
     async def start_scanning_task(self, app: Application):
         app['scanner'] = app.loop.create_task(self.scan_ports(app))
