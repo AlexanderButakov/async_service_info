@@ -15,11 +15,11 @@ from aiohttp.web import Application
 CONFIG = {
     "databases": {
         "postgres": {
-            "host": "localhost",
-            "port": 5432,
-            "database": "public",
-            "user": "postgres",
-            "password": "r00t"
+            "host": "",
+            "port": 0,
+            "database": "",
+            "user": "",
+            "password": ""
         }
     }
 }
